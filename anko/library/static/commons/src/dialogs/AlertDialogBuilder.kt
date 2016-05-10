@@ -278,7 +278,7 @@ class AlertDialogBuilder(val ctx: Context) {
         items(items.toTypedArray(), callback)
     }
 
-    fun items(items: Array<CharSequence>, callback: (which: Int) -> Unit) {
+    fun items(items: Array<out CharSequence>, callback: (which: Int) -> Unit) {
         checkBuilder()
         builder!!.setItems(items, { dialog, which -> callback(which) })
     }
