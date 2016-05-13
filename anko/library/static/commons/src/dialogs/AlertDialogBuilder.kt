@@ -30,7 +30,7 @@ import android.widget.ListAdapter
 
 @Deprecated("Use AlertBuilder class instead.")
 class AlertDialogBuilder(val ctx: Context) {
-    private var builder: AlertDialog.Builder? = AlertDialog.Builder(ctx)
+    private val builder = AlertDialog.Builder(ctx)
 
     /**
      * Returns the [AlertDialog] instance if created.
@@ -46,9 +46,16 @@ class AlertDialogBuilder(val ctx: Context) {
     }
 
     private fun checkBuilder() {
-        if (builder == null) {
+        if (dialog != null) {
             throw IllegalStateException("show() was already called for this AlertDialogBuilder")
         }
+    }
+
+    private fun build(): AlertDialog {
+        checkBuilder()
+        val dlg = builder.create()
+        dialog = dlg
+        return dlg
     }
 
     /**
@@ -56,10 +63,7 @@ class AlertDialogBuilder(val ctx: Context) {
      *
      */
     fun show(): AlertDialogBuilder {
-        checkBuilder()
-        dialog = builder!!.create()
-        builder = null
-        dialog!!.show()
+        build().show()
         return this
     }
 
@@ -68,7 +72,7 @@ class AlertDialogBuilder(val ctx: Context) {
      */
     fun title(title: CharSequence) {
         checkBuilder()
-        builder!!.setTitle(title)
+        builder.setTitle(title)
     }
 
     /**
@@ -76,7 +80,7 @@ class AlertDialogBuilder(val ctx: Context) {
      */
     fun title(title: Int) {
         checkBuilder()
-        builder!!.setTitle(title)
+        builder.setTitle(title)
     }
 
     /**
@@ -84,7 +88,7 @@ class AlertDialogBuilder(val ctx: Context) {
      */
     fun message(message: CharSequence) {
         checkBuilder()
-        builder!!.setMessage(message)
+        builder.setMessage(message)
     }
 
     /**
@@ -92,7 +96,7 @@ class AlertDialogBuilder(val ctx: Context) {
      */
     fun message(message: Int) {
         checkBuilder()
-        builder!!.setMessage(message)
+        builder.setMessage(message)
     }
 
     /**
@@ -100,7 +104,7 @@ class AlertDialogBuilder(val ctx: Context) {
      */
     fun icon(icon: Int) {
         checkBuilder()
-        builder!!.setIcon(icon)
+        builder.setIcon(icon)
     }
 
     /**
@@ -108,7 +112,7 @@ class AlertDialogBuilder(val ctx: Context) {
      */
     fun icon(icon: Drawable) {
         checkBuilder()
-        builder!!.setIcon(icon)
+        builder.setIcon(icon)
     }
 
     /**
@@ -116,7 +120,7 @@ class AlertDialogBuilder(val ctx: Context) {
      */
     fun customTitle(view: View) {
         checkBuilder()
-        builder!!.setCustomTitle(view)
+        builder.setCustomTitle(view)
     }
 
     /**
@@ -125,7 +129,7 @@ class AlertDialogBuilder(val ctx: Context) {
     fun customTitle(dsl: ViewManager.() -> Unit) {
         checkBuilder()
         val view = ctx.UI(dsl).view
-        builder!!.setCustomTitle(view)
+        builder.setCustomTitle(view)
     }
 
     /**
@@ -133,7 +137,7 @@ class AlertDialogBuilder(val ctx: Context) {
      */
     fun customView(view: View) {
         checkBuilder()
-        builder!!.setView(view)
+        builder.setView(view)
     }
 
     /**
@@ -142,7 +146,7 @@ class AlertDialogBuilder(val ctx: Context) {
     fun customView(dsl: ViewManager.() -> Unit) {
         checkBuilder()
         val view = ctx.UI(dsl).view
-        builder!!.setView(view)
+        builder.setView(view)
     }
 
     /**
@@ -152,7 +156,7 @@ class AlertDialogBuilder(val ctx: Context) {
      */
     fun cancellable(cancellable: Boolean = true) {
         checkBuilder()
-        builder!!.setCancelable(cancellable)
+        builder.setCancelable(cancellable)
     }
 
     /**
@@ -160,7 +164,7 @@ class AlertDialogBuilder(val ctx: Context) {
      */
     fun onCancel(callback: () -> Unit) {
         checkBuilder()
-        builder!!.setOnCancelListener { callback() }
+        builder.setOnCancelListener { callback() }
     }
 
     /**
@@ -168,7 +172,7 @@ class AlertDialogBuilder(val ctx: Context) {
      */
     fun onKey(callback: (keyCode: Int, e: KeyEvent) -> Boolean) {
         checkBuilder()
-        builder!!.setOnKeyListener({ dialog, keyCode, event -> callback(keyCode, event) })
+        builder.setOnKeyListener({ dialog, keyCode, event -> callback(keyCode, event) })
     }
 
     /**
@@ -189,7 +193,7 @@ class AlertDialogBuilder(val ctx: Context) {
      */
     fun neutralButton(neutralText: CharSequence, callback: DialogInterface.() -> Unit = { dismiss() }) {
         checkBuilder()
-        builder!!.setNeutralButton(neutralText, { dialog, which -> dialog.callback() })
+        builder.setNeutralButton(neutralText, { dialog, which -> dialog.callback() })
     }
 
     /**
@@ -228,7 +232,7 @@ class AlertDialogBuilder(val ctx: Context) {
      */
     fun positiveButton(positiveText: CharSequence, callback: DialogInterface.() -> Unit) {
         checkBuilder()
-        builder!!.setPositiveButton(positiveText, { dialog, which -> dialog.callback() })
+        builder.setPositiveButton(positiveText, { dialog, which -> dialog.callback() })
     }
 
     /**
@@ -267,7 +271,7 @@ class AlertDialogBuilder(val ctx: Context) {
      */
     fun negativeButton(negativeText: CharSequence, callback: DialogInterface.() -> Unit = { dismiss() }) {
         checkBuilder()
-        builder!!.setNegativeButton(negativeText, { dialog, which -> dialog.callback() })
+        builder.setNegativeButton(negativeText, { dialog, which -> dialog.callback() })
     }
 
     fun items(itemsId: Int, callback: (which: Int) -> Unit) {
@@ -280,17 +284,17 @@ class AlertDialogBuilder(val ctx: Context) {
 
     fun items(items: Array<out CharSequence>, callback: (which: Int) -> Unit) {
         checkBuilder()
-        builder!!.setItems(items, { dialog, which -> callback(which) })
+        builder.setItems(items, { dialog, which -> callback(which) })
     }
 
     fun adapter(adapter: ListAdapter, callback: (which: Int) -> Unit) {
         checkBuilder()
-        builder!!.setAdapter(adapter, { dialog, which -> callback(which) })
+        builder.setAdapter(adapter, { dialog, which -> callback(which) })
     }
 
     fun adapter(cursor: Cursor, labelColumn: String, callback: (which: Int) -> Unit) {
         checkBuilder()
-        builder!!.setCursor(cursor, { dialog, which -> callback(which) }, labelColumn)
+        builder.setCursor(cursor, { dialog, which -> callback(which) }, labelColumn)
     }
 
 }
